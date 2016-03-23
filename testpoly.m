@@ -15,7 +15,7 @@ P = [0 0;
 %% rotate the polygon
 
 % rotation angle
-ang = pi/7;
+ang = -1*pi/7;
 
 % rotation matrix
 Mrot = [cos(ang) sin(ang); -sin(ang) cos(ang)];
@@ -32,7 +32,7 @@ hold on
 %% find intersections with strip boundaries
 
 % limits
-dely = 0.1;
+dely = 0.2;
 miny = min(Pr(2,:));
 maxy = max(Pr(2,:));
 dy = miny-dely;
@@ -100,7 +100,9 @@ for kk=2:numel(intsLists),
             xStart = thisInt(1);
         elseif (not(inBtm))&&(not(inTop)),
             % end of a strip
-            xEnd = thisInt(1);
+            xEnd = thisInt(1);            
+            % add to strip list
+            strips = {strips{:},[[xStart xEnd xEnd xStart];[miny miny maxy maxy]]};
             % plot it
             patch([xStart xEnd xEnd xStart],[miny miny maxy maxy],'r')
             % reset xStart
