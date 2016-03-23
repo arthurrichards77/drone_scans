@@ -1,6 +1,8 @@
 close all
 clear all
 
+% field polygon
+% each column is a vertex
 P = [0 0;
      0 1;
      1 1;
@@ -8,31 +10,101 @@ P = [0 0;
      0.75 0;
      0.75 0.5;
      0.3 0.5;
-     0.3 0];
+     0.3 0]';
 
-pq = [-0.25 1 -0.04];
-%pq = [1 1 1.14];
-%pq = [1 1 0.14];
-%pq = [1 1 1.34];
-%pq = [0 1 0.45];
-%pq = [-0.25 1 0.24];
-%pq = [0 1 -2.45];
+%% rotate the polygon
 
-subplot 321
-patch(P(:,1),P(:,2),'g')
+% rotation angle
+ang = pi/7;
+
+% rotation matrix
+Mrot = [cos(ang) sin(ang); -sin(ang) cos(ang)];
+
+% rotate polygon
+Pr = Mrot*P;
+
+% plot it
+figure
+patch(Pr(1,:),Pr(2,:),'g')
 axis equal
 hold on
-a = axis();
 
-Ps = splitpoly(P,pq)
+%% find intersections with strip boundaries
 
-for ii=1:numel(Ps),
-    Pi = Ps{ii};
-    ci = [ii 0 numel(Ps)-ii];
-    ci = ci / norm(ci);
-    subplot(3,2,1)
-    patch(Pi(:,1),Pi(:,2),ci)
-    subplot(3,2,ii+1)
-    patch(Pi(:,1),Pi(:,2),ci)
-    axis(a)
+% limits
+dely = 0.1;
+miny = min(Pr(2,:));
+maxy = max(Pr(2,:));
+dy = miny-dely;
+
+kk=0;
+while dy<maxy,
+    kk = kk+1;
+    
+    % and shift it
+    dy = dy + dely;
+    % store the shift for later
+    dys(kk) = dy;
+
+    % the shift in Y
+    Prs = [Pr(1,:);
+           Pr(2,:) - dy];
+
+    % find intersections with X axis
+    ints = findIntersectionsWithX(Prs);
+    if numel(ints)>0,
+        % shift the intersection line back
+        ints(2,:) = ints(2,:)+dy;
+        % plot strip boundary
+        plot(ints(1,:),ints(2,:),'--ko')
+    end
+    intsLists{kk} = ints;
+end
+
+%% determine strips
+
+% initialise list
+% each strip stored as vertices
+strips = {};
+
+for kk=2:numel(intsLists),
+    
+    % the appropriate min and max y values
+    miny = dys(kk-1)
+    maxy = dys(kk)
+    
+    % combine intersection lists
+    intsBoth = [intsLists{kk-1} intsLists{kk}];
+    
+    % sort them by x ordinate
+    [sortx,isort]=sort(intsBoth(1,:));
+    intsBothSorted = [sortx; intsBoth(2,isort)]
+    
+    % initialize sweep along x
+    inTop = false;
+    inBtm = false;
+    xStart = inf;
+    
+    for ii=1:size(intsBothSorted,2),
+        % grab the next intersection
+        thisInt = intsBothSorted(:,ii);
+        % toggle top or bottom state
+        if thisInt(2)==miny,
+            inBtm = not(inBtm);
+        else
+            inTop = not(inTop);
+        end
+        % if not in a strip
+        if isinf(xStart),
+            % start a new strip
+            xStart = thisInt(1);
+        elseif (not(inBtm))&&(not(inTop)),
+            % end of a strip
+            xEnd = thisInt(1);
+            % plot it
+            patch([xStart xEnd xEnd xStart],[miny miny maxy maxy],'r')
+            % reset xStart
+            xStart = inf;
+        end
+    end
 end
