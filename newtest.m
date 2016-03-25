@@ -13,13 +13,13 @@ P = [0 0;
      0.3 0]';
 
 % strip angle
-ang = 0*pi/7;
+ang = pi/7;
 
 % strip width
 wid = 0.1;
 
 % strip offset
-ofs = 0.5;
+ofs = 0.0;
 
 % divide into strips
 strips = stripPoly(P,ang,wid,ofs);
