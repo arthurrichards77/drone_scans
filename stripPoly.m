@@ -31,6 +31,16 @@ end
 % debug - just return the shifted rotated thing
 strips = {stripsAbove{:},stripsBelow{:}};
 
+% final post-processing of strips
+for ii=1:numel(strips),
+    % convert to bounding box
+    strips{ii} = boundBox(strips{ii});
+    % undo the original offset in y
+    strips{ii}(2,:) = strips{ii}(2,:)+ofs;
+    % rotate back to the original alignment
+    strips{ii} = Mrot'*strips{ii};
+end
+
 end
 
 function strips = cutStripPlusPolys(Ps,wid)
@@ -81,4 +91,18 @@ end
 for ii=1:numel(Psb),
     Psb{ii}(2,:) = Psb{ii}(2,:) + cut;
 end
+end
+
+function [Pbox] = boundBox(P)
+
+% find min and max of each ordinate
+xmin = min(P(1,:));
+xmax = max(P(1,:));
+ymin = min(P(2,:));
+ymax = max(P(2,:));
+
+% find the bounding box polygon
+Pbox = [xmin xmax xmax xmin;
+        ymin ymin ymax ymax];
+    
 end
