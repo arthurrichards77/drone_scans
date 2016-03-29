@@ -42,7 +42,7 @@ for pp=1:numStrips,
     end
 end
 
-[pp,pt,scanTime,turnTime] = simpleGreedySequence(flights,vAir,Rmin,vWind);
+[pp,pt,scanTime,turnTime] = simpleOrderedSequence(flights,vAir,Rmin,vWind);
 plot(pp(1,:),pp(2,:),'g-', ...
     pp(1,1),pp(2,1),'g^')
 title(sprintf('%.0f^o : %.1f scanning and %.1f turning',ang*180/pi,scanTime,turnTime))

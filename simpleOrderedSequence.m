@@ -36,7 +36,7 @@ for ii=2:numel(flights),
     % now find the transition
     cInit = [currFlt(:,2);currHdg];
     cTerm = [nextFlt(:,1);nextHdg];
-    [px,py,ptt,pxa,pya,clInc]=shortestWindPath(cInit,cTerm,Rmin,vAir,vWind);
+    [px,py,ptt,pxa,pya,clInc]=shortestWindPathDB(cInit,cTerm,Rmin,vAir,vWind);
     
     % append to the flight so far
     p = [p [px;py] nextFlt];

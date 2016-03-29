@@ -48,7 +48,7 @@ for kk=1:17,
         end
     end
     
-    [pp,pt,scanTime,turnTime] = simpleGreedySequence(flights,vAir,Rmin,vWind);
+    [pp,pt,scanTime,turnTime] = simpleOrderedSequence(flights,vAir,Rmin,vWind);
     plot(pp(1,:),pp(2,:),'b-', ...
         pp(1,1),pp(2,1),'b^')
     
