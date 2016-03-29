@@ -16,9 +16,25 @@ alpha = asin(sin(beta)*norm(vWind)/Va);
 % this give me the heading
 hdg = trk - alpha;
 
-% third internal angle of the triangle
-gamma = pi - alpha - beta;
-
-% sine rule again to get the ground speed
-Vg = Va*sin(gamma)/sin(beta);
-
+% trap cases where wind almost parallel to track
+if abs(alpha)<1e-6,
+    
+    if abs(beta)<1e-6,
+        
+        Vg = Va + norm(vWind);
+        
+    else
+        
+        Vg = Va - norm(vWind);
+        
+    end
+    
+else
+    
+    % third internal angle of the triangle
+    gamma = pi - alpha - beta;
+    
+    % sine rule again to get the ground speed
+    Vg = Va*sin(gamma)/sin(beta);
+    
+end

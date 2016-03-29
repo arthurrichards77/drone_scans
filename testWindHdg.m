@@ -1,17 +1,17 @@
 close all
 clear all
 
-vWind = [0.1,0.9];
+vWind = [0.01,-0.9];
 
 Va = 1.2;
 
-trk = -3*pi/4;
+trk = -2*pi/4;
 
 [hdg,Vg] = hdgSpdForTrkInWind(Va,trk,vWind)
 
 % debug - plot the vectors
 figure
-plot([0 Vg*cos(trk)],[0 Vg*sin(trk)],'g-', ...
+plot([0 Vg*cos(trk)],[0 Vg*sin(trk)],'og-', ...
     [0 Va*cos(hdg)],[0 Va*sin(hdg)],'b-', ...
     Va*cos(hdg)+[0 vWind(1)],Va*sin(hdg)+[0 vWind(2)],'r-')
 legend('Ground','Air','Wind')
