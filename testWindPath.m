@@ -23,15 +23,20 @@ cTerm = [5;1;pi];
 vWind = [0.5 0];
 % 
 % % example 3 from paper
-cInit = [0;0;0];
-cTerm = [-6;2;0];
-vWind = [-0.9 0];
+% cInit = [0;0;0];
+% cTerm = [-6;2;0];
+% vWind = [-0.9 0];
 % 
 % % another one from paper
 % cInit = [0;0;0];
 % cTerm = [0.005;0.56;0];
 % vWind = [-0.9 0];
 
+% option to treat third element as a ground track rather than a heading
+[cInit(3),Vg]=hdgSpdForTrkInWind(vAir,cInit(3),vWind);
+[cTerm(3),Vg]=hdgSpdForTrkInWind(vAir,cTerm(3),vWind);
+
+% find the shortest path in wind
 [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInit,cTerm,Rmin,vAir,vWind);
 
 plot(px,py,'b-', ...
