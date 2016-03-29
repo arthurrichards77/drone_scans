@@ -2,66 +2,74 @@ function [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInit,cTerm,Rmin,vFly,vWind)
 %
 %
 
-% iterate over the time taken for the manoeuvre
-t = 0;
-dt = 0.05;
+% initialise search
+dStar = inf;
+clStar = [];
 
-% just fixed loop for now
-for ii=1:1000,
-    % time for intercept
-    t = t+dt;
+% search through all classes
+for cc=1:8,
     
-    % find the wind-shifted target
-    cTermShifted = cTerm - [vWind(1);vWind(2);0]*t;
+    % mask for just this path
+    clMask = ((1:8)==cc);       
     
-    % find closest-timed Dubins path
-    [pxa,pya,pt,clInc]=shortestDubinsPath(cInit,cTermShifted,Rmin,vFly*t);
+    % find the intercept time
+    % pretty sensitive to initial guess
+    [dCl,G] = fzero(@(d)targetTimeDiff(d,cInit,cTerm,Rmin,vWind,vFly,clMask),0.0);
     
-    % store stuff
-    ts(ii)=t;
-    Gs(ii)=max(pt)-vFly*t;
-    
-    % stop at first intercept
-    if Gs(ii)<0,
-        break
+    if abs(G)<1e-6,
+        if dCl<dStar,
+            dStar = dCl;
+            clStar = clMask;
+        end
     end
-
+    
+    % debug
+%     figure(2)
+%     subplot(3,3,cc)
+%     for ii=1:100,
+%         ds(ii)=ii/10;
+%         Gs(ii)=targetTimeDiff(ds(ii),cInit,cTerm,Rmin,vWind,vFly,clMask);
+%         plot(ds,Gs)
+%         grid on
+%     end
 end
+%figure(1)
 
-% limits for next stage
-thi = ts(ii);
-tlo = ts(ii-1);
+% time for the wind to shift by d units
+tShift = dStar/norm(vWind);
 
-% now bisection search
-for jj=1:20,
+% find the wind-shifted target, moved by d units
+cTermShifted = cTerm - [vWind(1);vWind(2);0]*tShift;
 
-    % time for intercept
-    t = 0.5*(thi+tlo);
-    
-    % find the wind-shifted target
-    cTermShifted = cTerm - [vWind(1);vWind(2);0]*t;
-    
-    % find closest-timed Dubins path
-    [pxa,pya,pt,clInc]=shortestDubinsPath(cInit,cTermShifted,Rmin,vFly*t);
-    
-    % store stuff
-    ts(jj+ii)=t;
-    Gs(jj+ii)=max(pt)-vFly*t;
-    
-    % update bounds
-    if Gs(jj+ii)<0,
-        % new upper
-        thi = t;
-    else
-        % new lower
-        tlo = t;
-    end
-end
+% find closest-timed Dubins path of selected class
+[pxa,pya,pt,clInc]=shortestDubinsPath(cInit,cTermShifted,Rmin,clStar);
 
 % shift back by the wind
 px = pxa + vWind(1)*pt/vFly;
 py = pya + vWind(2)*pt/vFly;
 
-figure(2)
-plot(ts,Gs,'.b-')
-figure(1)
+end
+
+function G = targetTimeDiff(d,cInit,cTerm,Rmin,vWind,vFly,clMask)
+
+% time for the wind to shift by d units
+tShift = d/norm(vWind);
+
+% find the wind-shifted target, moved by d units
+cTermShifted = cTerm - [vWind(1);vWind(2);0]*tShift;
+
+% find closest-timed Dubins path of selected class
+[pxa,pya,pt,clInc]=shortestDubinsPath(cInit,cTermShifted,Rmin,clMask);
+
+% flight time for real aircraft
+tFly = max(pt)/vFly;
+
+% response is the difference
+G = tFly - tShift;
+
+% trap case if empty
+if isempty(G),
+    G = 1000;
+end
+
+end
