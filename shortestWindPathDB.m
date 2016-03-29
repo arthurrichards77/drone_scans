@@ -16,7 +16,7 @@ queryRow = [cInitOs(3) cTermOs(1) cTermOs(2) cTermOs(3) Rmin vFly vWind(1) vWind
 if isempty(turnDBrows),
     loc=0;
 else
-    [~,loc]=ismember(queryRow,turnDBrows,'rows');
+    [loc]=myDBsearch(queryRow,turnDBrows);
 end
 
 if loc>0,
@@ -33,8 +33,8 @@ if loc>0,
     
 else
     
-    queryRow
-    turnDBrows
+    %queryRow
+    %turnDBrows
     
     % just call the other for now
     [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInitOs,cTermOs,Rmin,vFly,vWind);
@@ -54,3 +54,24 @@ end
 % need to put it back to original location
 px = px+cInit(1);
 py = py+cInit(2);
+
+end
+
+function [loc]=myDBsearch(queryRow,turnDBrows)
+
+% take difference with each row
+for ii=1:size(turnDBrows,1),
+    dbDiff(ii) = norm(turnDBrows(ii,:)-queryRow);
+end
+
+% find the closest
+[minDiff,ixMin]=min(dbDiff);
+
+% check against tolerance
+if minDiff<1e-7,
+    loc = ixMin;
+else
+    loc = 0;
+end
+
+end
