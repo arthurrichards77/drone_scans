@@ -168,14 +168,17 @@ function [xc,yc]=findTangCircCtr(cTang,Rmin,dir)
 %
 
 % make sure direction is sensible, +/-1
-dir = sign(dir);
-assert(dir~=0);
+%dir = sign(dir);
+%assert(dir~=0);
 
 % rotation matrix
-M = [0 dir; -dir 0];
+%M = [0 dir; -dir 0];
 
 % rotate the tangent vector to get vector from point to centre
-vCtr = Rmin*M*[cos(cTang(3));sin(cTang(3))];
+vCtr = Rmin*[sin(cTang(3));-cos(cTang(3))];
+if dir<0,
+    vCtr = -vCtr;
+end
 
 % add it to points
 xc = cTang(1)+vCtr(1);
