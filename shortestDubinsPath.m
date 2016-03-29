@@ -1,93 +1,121 @@
-function [px,py,pt,clInc]=shortestDubinsPath(cInit,cTerm,Rmin,dTarg)
+function [px,py,pt,clInc]=shortestDubinsPath(cInit,cTerm,Rmin,clMask)
 %
-% tTarg is target time for the maneuver
-% return the result closest to the target time
+% clMask(i)=True <=> try class i
 
-% default target time is zero
-if ~exist('dTarg','var'),
-    dTarg=0; % now min time
+% default to try first six classes
+if ~exist('clMask','var'),
+    clMask = [true(6,1); false(2,1)];
 end
 
-% start with just one class
-[px,py,pt]=pathTST(cInit,cTerm,Rmin,-1,-1);
-dInc = abs(max(pt)-dTarg);
-clInc = 'LSL';
+% initialise
+tInc = inf;
+clInc = 'NFP'; % no feasible path
+px=[];
+py=[];
+pt=[];
 
-% try next one
-[px2,py2,pt2]=pathTST(cInit,cTerm,Rmin,1,-1);
-d2 = abs(max(pt2)-dTarg);
-if d2<dInc,
-    dInc=d2;
-    clInc = 'RSL';
-    px=px2;
-    py=py2;
-    pt=pt2;
+if clMask(1),
+    % start with just one class
+    [px2,py2,pt2]=pathTST(cInit,cTerm,Rmin,-1,-1);
+    % update incumbent
+    if max(pt2)<tInc,
+        px=px2;
+        py=py2;
+        pt=pt2;
+        clInc = 'LSL';
+        tInc = max(pt2);
+    end
 end
 
-% try next one
-[px2,py2,pt2]=pathTST(cInit,cTerm,Rmin,-1,1);
-d2 = abs(max(pt2)-dTarg);
-if d2<dInc,
-    dInc=d2;
-    clInc = 'LSR';
-    px=px2;
-    py=py2;
-    pt=pt2;
+if clMask(2),
+    % start with just one class
+    [px2,py2,pt2]=pathTST(cInit,cTerm,Rmin,1,1);
+    % update incumbent
+    if max(pt2)<tInc,
+        px=px2;
+        py=py2;
+        pt=pt2;
+        clInc = 'RSR';
+        tInc = max(pt2);
+    end
 end
 
-% try next one
-[px2,py2,pt2]=pathTST(cInit,cTerm,Rmin,1,1);
-d2 = abs(max(pt2)-dTarg);
-if d2<dInc,
-    dInc=d2;
-    clInc = 'RSR';
-    px=px2;
-    py=py2;
-    pt=pt2;
+if clMask(3),
+    % start with just one class
+    [px2,py2,pt2]=pathTST(cInit,cTerm,Rmin,1,-1);
+    % update incumbent
+    if max(pt2)<tInc,
+        px=px2;
+        py=py2;
+        pt=pt2;
+        clInc = 'RSL';
+        tInc = max(pt2);
+    end
 end
 
-% try next one
-[px2,py2,pt2]=pathTTT(cInit,cTerm,Rmin,1,1);
-d2 = abs(max(pt2)-dTarg);
-if d2<dInc,
-    dInc=d2;
-    clInc = 'RLR1';
-    px=px2;
-    py=py2;
-    pt=pt2;
+if clMask(4),
+    % start with just one class
+    [px2,py2,pt2]=pathTST(cInit,cTerm,Rmin,-1,1);
+    % update incumbent
+    if max(pt2)<tInc,
+        px=px2;
+        py=py2;
+        pt=pt2;
+        clInc = 'LSR';
+        tInc = max(pt2);
+    end
 end
 
-% try next one
-[px2,py2,pt2]=pathTTT(cInit,cTerm,Rmin,1,-1);
-d2 = abs(max(pt2)-dTarg);
-if d2<dInc,
-    dInc=d2;
-    clInc = 'RLR2';
-    px=px2;
-    py=py2;
-    pt=pt2;
+if clMask(5),
+    % start with just one class
+    [px2,py2,pt2]=pathTTT(cInit,cTerm,Rmin,1,-1);
+    % update incumbent
+    if max(pt2)<tInc,
+        px=px2;
+        py=py2;
+        pt=pt2;
+        clInc = 'RLRouter';
+        tInc = max(pt2);
+    end
 end
 
-% try next one
-[px2,py2,pt2]=pathTTT(cInit,cTerm,Rmin,-1,1);
-d2 = abs(max(pt2)-dTarg);
-if d2<dInc,
-    dInc=d2;
-    clInc = 'LRL1';
-    px=px2;
-    py=py2;
-    pt=pt2;
+if clMask(6),
+    % start with just one class
+    [px2,py2,pt2]=pathTTT(cInit,cTerm,Rmin,-1,1);
+    % update incumbent
+    if max(pt2)<tInc,
+        px=px2;
+        py=py2;
+        pt=pt2;
+        clInc = 'LRLouter';
+        tInc = max(pt2);
+    end
 end
 
-% try next one
-[px2,py2,pt2]=pathTTT(cInit,cTerm,Rmin,-1,-1);
-d2 = abs(max(pt2)-dTarg);
-if d2<dInc,
-    dInc=d2;
-    clInc = 'LRL2';
-    px=px2;
-    py=py2;
-    pt=pt2;
+if clMask(7),
+    % start with just one class
+    [px2,py2,pt2]=pathTTT(cInit,cTerm,Rmin,1,1);
+    % update incumbent
+    if max(pt2)<tInc,
+        px=px2;
+        py=py2;
+        pt=pt2;
+        clInc = 'RLRinner';
+        tInc = max(pt2);
+    end
+end
+
+if clMask(8),
+    % start with just one class
+    [px2,py2,pt2]=pathTTT(cInit,cTerm,Rmin,-1,-1);
+    % update incumbent
+    if max(pt2)<tInc,
+        px=px2;
+        py=py2;
+        pt=pt2;
+        clInc = 'LRLinner';
+        tInc = max(pt2);
+    end
 end
 
 end
@@ -211,7 +239,7 @@ t2 = atan2(y2-yc,x2-xc);
 if dir*(t2-t1)<0,
     t2 = t2 + 2*dir*pi;
 end
-arc = (0:49)*R*abs(t2-t1)/50;
+arc = (0:49)*R*abs(t2-t1)/49;
 
 % make angles
 ts = dir*linspace(dir*t1,dir*t2,50);

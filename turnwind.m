@@ -28,9 +28,9 @@ cTerm = [-6;2;0];
 vWind = [-0.9 0];
 
 % another one from paper
-cInit = [0;0;0];
-cTerm = [-0.0;0.56;0];
-vWind = [-0.9 0];
+% cInit = [0;0;0];
+% cTerm = [-0.046;0.56;0];
+% vWind = [-0.9 0];
 
 [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInit,cTerm,Rmin,vAir,vWind);
 
