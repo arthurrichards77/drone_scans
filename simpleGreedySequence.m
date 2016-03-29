@@ -3,11 +3,7 @@ function [p,pt,scanTime,turnTime] = simpleGreedySequence(flights,vAir,Rmin,vWind
 % pp is matrix of waypoints [.....[xi;yi]......]
 % pt is vector of times
 
-% initialize - no flights done
-flightsDone = false(numel(flights),1);
-
 % start arbitrarily at flight number one, first end
-flightsDone(1)=true;
 p = flights{1};
 currFlt = flights{1};
 currDir = 2; % column 1 to column 2

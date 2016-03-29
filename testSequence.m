@@ -4,15 +4,15 @@ clear all
 % flight parameters
 Rmin = 0.75;
 vAir = 1;
-vWind = [0.001,-0.0007];
+vWind = [0.0001,-0.7];
 
 % field polygon
 % simple square
 P = [0 10 10 0;
-     0  0 10 10];
- 
+    0  0 10 10];
+
 % strip angle
-ang = 13*pi/6;
+ang = -1*pi/2;
 
 % strip width
 wid = 1;
@@ -44,4 +44,5 @@ end
 
 [pp,pt,scanTime,turnTime] = simpleGreedySequence(flights,vAir,Rmin,vWind);
 plot(pp(1,:),pp(2,:),'g-', ...
-     pp(1,1),pp(2,1),'g^')
+    pp(1,1),pp(2,1),'g^')
+title(sprintf('%.0f^o : %.1f scanning and %.1f turning',ang*180/pi,scanTime,turnTime))
