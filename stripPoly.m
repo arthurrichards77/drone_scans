@@ -1,4 +1,4 @@
-function strips = stripPoly(P,ang,wid,ofs)
+function [strips,flights] = stripPoly(P,ang,wid,ofs)
 
 % first rotate it to align strip angl with X axis
 Mrot = [cos(ang) sin(ang); -sin(ang) cos(ang)];
@@ -39,6 +39,8 @@ for ii=1:numel(strips),
     strips{ii}(2,:) = strips{ii}(2,:)+ofs;
     % rotate back to the original alignment
     strips{ii} = Mrot'*strips{ii};
+    % and find the flight along its middle
+    flights{ii} = findMidline(strips{ii});
 end
 
 end
@@ -105,4 +107,12 @@ ymax = max(P(2,:));
 Pbox = [xmin xmax xmax xmin;
         ymin ymin ymax ymax];
     
+end
+
+function [midline]=findMidline(Pbox)
+
+enda = 0.5*(Pbox(:,1)+Pbox(:,4));
+endb = 0.5*(Pbox(:,2)+Pbox(:,3));
+midline = [enda endb];
+
 end
