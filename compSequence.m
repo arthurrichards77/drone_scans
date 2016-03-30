@@ -89,6 +89,7 @@ for kk=1:numel(angs),
     save([fname '.mat']);
     print('-dpng',[fname '.png']);
     % clear it
+    %pause(0.001)
     clf
     % or open a new one
     %figure

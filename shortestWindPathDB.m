@@ -36,6 +36,8 @@ else
     %queryRow
     %turnDBrows
     
+    %disp('Fresh case')
+    
     % just call the other for now
     [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInitOs,cTermOs,Rmin,vFly,vWind);
     
@@ -54,6 +56,8 @@ end
 % need to put it back to original location
 px = px+cInit(1);
 py = py+cInit(2);
+
+%chkFinal = norm([px(end);py(end)]-cTerm(1:2))
 
 end
 
