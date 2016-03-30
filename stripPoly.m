@@ -4,39 +4,25 @@ function [strips,flights] = stripPoly(P,ang,wid,ofs)
 Mrot = [cos(ang) sin(ang); -sin(ang) cos(ang)];
 Pr = Mrot*P;
 
+% find lowest point, less just a tiny bit
+yMinAll = min(Pr(2,:)) - 1e-6;
+
 % now shift it by the offset
 Prs = [Pr(1,:);
-       Pr(2,:)-ofs];
+       Pr(2,:)-ofs-yMinAll];
+
+% check nothing left below axis
+assert(all(Prs(2,:)>0))
    
-% start by splitting at the X axis
-[Psabove,Psbelow] = splitPolyOnX(Prs);
-
-% flip the below section
-Psbel2 = Psbelow;
-for ii=1:numel(Psbelow),
-    Psbel2{ii} = [Psbelow{ii}(1,:);
-                 -Psbelow{ii}(2,:)];
-end
-
 % divide each in horizontal strips working up from x axis
-stripsAbove = cutStripPlusPolys(Psabove,wid);
-stripsBel2 = cutStripPlusPolys(Psbel2,wid);
-
-% flip below section back
-stripsBelow = stripsBel2;
-for ii=1:numel(stripsBelow),
-    stripsBelow{ii}(2,:) = -stripsBel2{ii}(2,:);
-end
-
-% debug - just return the shifted rotated thing
-strips = {stripsAbove{:},stripsBelow{:}};
+strips = cutStripPlusPoly(Prs,wid);
 
 % final post-processing of strips
 for ii=1:numel(strips),
     % convert to bounding box
     strips{ii} = boundBox(strips{ii});
     % undo the original offset in y
-    strips{ii}(2,:) = strips{ii}(2,:)+ofs;
+    strips{ii}(2,:) = strips{ii}(2,:)+ofs+yMinAll;
     % rotate back to the original alignment
     strips{ii} = Mrot'*strips{ii};
     % and find the flight along its middle
@@ -45,13 +31,13 @@ end
 
 end
 
-function strips = cutStripPlusPolys(Ps,wid)
+function strips = cutStripPlusPoly(P,wid)
 
 % list of polygons generated
 strips = {};
 
 % list of polygons above current cut
-PsToGo = Ps;
+PsToGo = {P};
 
 % current cutting line
 cut = -wid;

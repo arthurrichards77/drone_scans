@@ -13,7 +13,7 @@ P = [0 0;
      0.3 0]';
 
 % strip angle
-ang = -1*pi/12;
+ang = -5*pi/12;
 
 % strip width
 wid = 0.1;
@@ -39,3 +39,4 @@ for pp=1:numStrips,
         plot(flights{pp}(1,:),flights{pp}(2,:),'ko--')
     end
 end
+grid on
