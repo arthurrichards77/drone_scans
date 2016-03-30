@@ -4,7 +4,7 @@ clear all
 % flight parameters
 Rmin = 0.75;
 vAir = 1;
-vWind = [0.6,-0.1];
+vWind = [0.1,-0.6];
 
 % simple square
 Psq = [0 10 10  0;
@@ -25,10 +25,14 @@ Prect3 = [0 5.5  5.5  0;
 
 % odd shape, no sides parallel
 Podd = [0 3  3   -1 -3.6
-        0 1 11.3 10  3.6];
-     
+        0 1 11.3 10  3.6];    
+
+% circular, almost
+ths = pi*(1:10)/5;
+Pcirc = 10*[cos(ths);sin(ths)];
+    
 % choose test case
-P = Podd;
+P = Pcirc;
      
 % find centroid
 pCent = mean(P,2);
@@ -40,7 +44,7 @@ wid = 1;
 ofs = -0.0;
 
 % strip angle range to try
-Nangs = 120;
+Nangs = 360;
 angs = (1:Nangs)*2*pi/Nangs;
 
 for kk=1:numel(angs),
@@ -86,10 +90,10 @@ for kk=1:numel(angs),
     
     % print the figure
     fname=sprintf('results/odd_windacross_n%d',kk);
-    save([fname '.mat']);
-    print('-dpng',[fname '.png']);
+    %save([fname '.mat']);
+    %print('-dpng',[fname '.png']);
     % clear it
-    %pause(0.001)
+    pause(0.001)
     clf
     % or open a new one
     %figure
