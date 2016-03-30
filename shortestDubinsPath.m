@@ -3,7 +3,7 @@ function [px,py,pt,clInc]=shortestDubinsPath(cInit,cTerm,Rmin,clMask)
 % clMask(i)=True <=> try class i
 
 % default to try first six classes
-if ~exist('clMask','var'),
+if isempty(clMask),
     clMask = [true(6,1); false(2,1)];
 end
 

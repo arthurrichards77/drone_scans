@@ -14,7 +14,7 @@ cTerm = [-1.5;2.0;-pi/4];
 
 subplot 331
 
-[px,py,pt,clInc]=shortestDubinsPath(cInit,cTerm,Rmin);
+[px,py,pt,clInc]=shortestDubinsPath(cInit,cTerm,Rmin,[]);
 
 plot(px,py,'b-', ...
     cInit(1)+[0 cos(cInit(3))],cInit(2)+[0 sin(cInit(3))],'g-',...
