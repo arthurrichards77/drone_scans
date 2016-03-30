@@ -88,4 +88,6 @@ for kk=1:numel(angs),
 end
 %%
 figure
-plot(angs*180/pi,scanTimeList,angs*180/pi,turnTimeList+scanTimeList)
+%plot(angs*180/pi,scanTimeList,angs*180/pi,turnTimeList+scanTimeList)
+area(angs*180/pi,[scanTimeList; turnTimeList]')
+legend('Scanning','Turning')
