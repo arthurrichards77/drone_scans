@@ -21,16 +21,16 @@ vWind = [-0.5 0];
 cInit = [0;0;pi/4];
 cTerm = [5;1;pi];
 vWind = [0.5 0];
-% 
+
 % % example 3 from paper
-% cInit = [0;0;0];
-% cTerm = [-6;2;0];
-% vWind = [-0.9 0];
-% 
+cInit = [0;0;0];
+cTerm = [-6;2;0];
+vWind = [-0.9 0];
+
 % % another one from paper
-% cInit = [0;0;0];
-% cTerm = [0.005;0.56;0];
-% vWind = [-0.9 0];
+cInit = [0;0;0];
+cTerm = [0.005;0.56;0];
+vWind = [-0.9 0];
 
 % option to treat third element as a ground track rather than a heading
 %[cInit(3),Vg]=hdgSpdForTrkInWind(vAir,cInit(3),vWind);

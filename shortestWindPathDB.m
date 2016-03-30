@@ -21,7 +21,7 @@ end
 
 if loc>0,
     
-    disp('Reuse')
+    %disp('Reuse')
     % done this one already
     sol = turnDBsols{loc};
     px = sol.px;

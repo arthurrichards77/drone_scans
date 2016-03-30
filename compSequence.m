@@ -23,8 +23,12 @@ Prect2 = [0 4.5  4.5  0;
 Prect3 = [0 5.5  5.5  0;
          0   0 18.2 18.2];
 
+% odd shape, no sides parallel
+Podd = [0 3  3   -1 -3.6
+        0 1 11.3 10  3.6];
+     
 % choose test case
-P = Prect3;
+P = Podd;
      
 % find centroid
 pCent = mean(P,2);
@@ -36,7 +40,7 @@ wid = 1;
 ofs = -0.0;
 
 % strip angle range to try
-Nangs = 128;
+Nangs = 120;
 angs = (1:Nangs)*2*pi/Nangs;
 
 for kk=1:numel(angs),
@@ -46,13 +50,6 @@ for kk=1:numel(angs),
     % divide into strips
     [strips,flights] = stripPoly(P,ang,wid,ofs);
     
-    % plot the original field
-    patch(P(1,:),P(2,:),'g')
-    axis equal
-    hold on
-    
-    % sort flights in basic direction
-    flights = sortFlights(flights,[sin(ang);-cos(ang)]);
     
     % plot what we got back
     numStrips = numel(strips);
@@ -64,10 +61,21 @@ for kk=1:numel(angs),
             %plot(flights{pp}(1,:),flights{pp}(2,:),'ko--')
         end
     end
+    hold on    
+    % plot the original field
+    plot([P(1,:) P(1,1)],[P(2,:) P(2,1)],'k:','LineWidth',2)
+    axis equal
     
+    % sort flights in basic direction
+    flights = sortFlights(flights,[sin(ang);-cos(ang)]);
+    
+    % compile the total path in sorted order
     [pp,pt,scanTime,turnTime] = simpleOrderedSequence(flights,vAir,Rmin,vWind);
+    
+    % plot
     plot(pp(1,:),pp(2,:),'b-', ...
         pp(1,1),pp(2,1),'b^')
+    % plot the wind vector
     plot(pCent(1)+[0 vWind(1)],pCent(2)+[0,vWind(2)],'r-','LineWidth',2)
     plot(pCent(1),pCent(2),'ro','LineWidth',2)
     
@@ -77,17 +85,19 @@ for kk=1:numel(angs),
     turnTimeList(kk) = turnTime;
     
     % print the figure
-    fname=sprintf('results/rect3_windacross_n%d',kk);
+    fname=sprintf('results/odd_windacross_n%d',kk);
     save([fname '.mat']);
     print('-dpng',[fname '.png']);
     % clear it
     clf
     % or open a new one
-    % figure
+    %figure
     
 end
 %%
 figure
 %plot(angs*180/pi,scanTimeList,angs*180/pi,turnTimeList+scanTimeList)
 area(angs*180/pi,[scanTimeList; turnTimeList]')
-legend('Scanning','Turning')
+legend('Scanning','Turning','Location','SouthEast')
+xlabel('Angle (^o)')
+ylabel('Time')
