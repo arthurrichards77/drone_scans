@@ -1,2 +1,5 @@
 *.asv
 results/*
+codegen/*
+*.mexw64
+*.mexw32

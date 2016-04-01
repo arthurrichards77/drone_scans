@@ -8,12 +8,18 @@ dbgPlot = false;
 % bisection tolerance
 tolBisect = 1e-5;
 
+% default path class mask
+clMaskDef = [true(6,1); false(2,1)];
+
 % start by searching over default path classes
 % lower bound
 dLB = 0;
-[gLB,pxLB,pyLB,ptLB,clLB] = targetTimeDiff(dLB,cInit,cTerm,Rmin,vWind,vFly,[]);
+[gLB,pxa,pya,pt,clLB] = targetTimeDiff(dLB,cInit,cTerm,Rmin,vWind,vFly,clMaskDef);
 % gone wrong if g not zero at zero
-assert(gLB>=0)
+%assert(gLB>=0)
+
+% set default class here just to keep codegen happy
+clInc = clLB;
 
 if dbgPlot,
     dgs = [dLB gLB];
@@ -21,17 +27,17 @@ end
 
 % upper bound
 dUB = 1;
-[gUB,pxUB,pyUB,ptUB,clUB] = targetTimeDiff(dUB,cInit,cTerm,Rmin,vWind,vFly,[]);
+[gUB,pxUB,pyUB,ptUB,clUB] = targetTimeDiff(dUB,cInit,cTerm,Rmin,vWind,vFly,clMaskDef);
 
 if dbgPlot,
     dgs = [dgs; dUB gUB];
 end
 
 % stage 1 - expand until enclosing a zero crossing
-while gUB>0,
+while gUB(1)>0,
     dLB = dUB;
     dUB = 2*dUB;
-    [gUB,pxUB,pyUB,ptUB,clUB] = targetTimeDiff(dUB,cInit,cTerm,Rmin,vWind,vFly,[]);
+    [gUB,pxUB,pyUB,ptUB,clUB] = targetTimeDiff(dUB,cInit,cTerm,Rmin,vWind,vFly,clMaskDef);
     if dbgPlot,
         dgs = [dgs; dUB gUB];
         dmax = dUB;
@@ -41,8 +47,8 @@ end
 % stage 2 - bisection search
 while dUB>dLB+tolBisect,
     dT = 0.5*(dUB+dLB);
-    [gT,pxa,pya,pt,clInc] = targetTimeDiff(dT,cInit,cTerm,Rmin,vWind,vFly,[]);
-    if gT<0,
+    [gT,pxa,pya,pt,clInc] = targetTimeDiff(dT,cInit,cTerm,Rmin,vWind,vFly,clMaskDef);
+    if gT(1)<0,
         dUB = dT;
         gUB = gT;
         clUB = clInc;
@@ -69,6 +75,7 @@ if ~strcmp(clLB,clUB),
     % cautious steps here
     dStep = dUB/20;
     % initialize for each case
+    gLast = NaN(8,1);
     for cc=1:8,
         [thisG,~,~,~,~] = targetTimeDiff(dT,cInit,cTerm,Rmin,vWind,vFly,((1:8)==cc));
         if isempty(thisG),
@@ -94,10 +101,10 @@ if ~strcmp(clLB,clUB),
                 if dbgPlot,
                     dgs2 = [dgs2; dT thisG];
                 end
-                if thisG*gLast(cc)<=0,
+                if thisG(1)*gLast(cc)<=0,
                     % sign change - possible winner!
                     % also check for step here too
-                    if abs(thisG-gLast(cc))<Rmin, % needs better tolerance
+                    if abs(thisG(1)-gLast(cc))<Rmin, % needs better tolerance
                         ccWins = cc;
                         if dbgPlot,
                             figure(9)
@@ -108,7 +115,7 @@ if ~strcmp(clLB,clUB),
                     end
                 else
                     % store for next time
-                    gLast(cc)=thisG;
+                    gLast(cc)=thisG(1);
                 end
             end
         end
@@ -121,11 +128,11 @@ if ~strcmp(clLB,clUB),
     dUB = dT;
     dLB = dT-dStep;
     % need to check if rising or falling
-    gUBsign = sign(thisG);
+    gUBsign = sign(thisG(1));
     while dUB>dLB+tolBisect,
         dT = 0.5*(dUB+dLB);
         [gT,pxa,pya,pt,clInc] = targetTimeDiff(dT,cInit,cTerm,Rmin,vWind,vFly,clMask);
-        if gT*gUBsign>0,
+        if gT(1)*gUBsign>0,
             dUB = dT;
         else
             dLB = dT;
@@ -192,5 +199,10 @@ tFly = max(pt)/vFly;
 
 % response is the difference
 G = tFly - tShift;
+
+% trap empty case with NaN
+if isempty(G),
+    G = NaN;
+end
 
 end
