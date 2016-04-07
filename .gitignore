@@ -1,2 +1,4 @@
 *.asv
 results/*
+codegen/*
+rungit.bat

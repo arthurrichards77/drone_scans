@@ -1,4 +1,4 @@
-function [p,pt,scanTime,turnTime] = simpleGreedySequence(flights,vAir,Rmin,vWind)
+function [p,pt,scanTime,turnTime] = simpleOrderedSequence(flights,vAir,Rmin,vWind)
 %
 % pp is matrix of waypoints [.....[xi;yi]......]
 % pt is vector of times
