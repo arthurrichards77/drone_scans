@@ -39,7 +39,8 @@ else
     %disp('Fresh case')
     
     % just call the other for now
-    [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInitOs,cTermOs,Rmin,vFly,vWind);
+    %[px,py,pt,pxa,pya,clInc]=shortestWindPath(cInitOs,cTermOs,Rmin,vFly,vWind);
+    [px,py,pt,pxa,pya,clInc]=shortestWindPath_mex(cInitOs,cTermOs,Rmin,vFly,vWind);
     
     % store it in DB
     sol = struct('px',px,'py',py,'pt',pt,'pxa',pxa,'pya',pya,'clInc',clInc);

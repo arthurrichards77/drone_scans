@@ -65,11 +65,11 @@ end
 
 % check for discontinuity - am I riding same line both sides?
 if ~strcmp(clLB,clUB),
-% %     disp('Discontinuity')
-% %     clLB
-% %     clUB
-% %     gLB
-% %     gUB
+    % %     disp('Discontinuity')
+    % %     clLB
+    % %     clUB
+    % %     gLB
+    % %     gUB
     % time to work right from the upper bound
     dT = dUB;
     % cautious steps here
@@ -87,7 +87,7 @@ if ~strcmp(clLB,clUB),
             end
         end
     end
-%     gLast
+    %     gLast
     % winning class placeholder
     ccWins = 0;
     % linear search this time
@@ -111,7 +111,7 @@ if ~strcmp(clLB,clUB),
                             plot(pxa,pya)
                             title(clInc)
                         end
-                        break                        
+                        break
                     end
                 else
                     % store for next time
@@ -194,15 +194,17 @@ cTermShifted = cTerm - [vWind(1);vWind(2);0]*tShift;
 % axis equal
 % hold on
 
-% flight time for real aircraft
-tFly = max(pt)/vFly;
-
-% response is the difference
-G = tFly - tShift;
-
 % trap empty case with NaN
-if isempty(G),
-    G = NaN;
+if isempty(pt),
+    tFly = NaN;
+    G = NaN;    
+else
+    % flight time for real aircraft
+    tFly = max(pt,[],2)/vFly;
+    
+    % response is the difference
+    G = tFly - tShift;
+    
 end
 
 end

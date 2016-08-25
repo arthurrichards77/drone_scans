@@ -20,9 +20,12 @@ vAir = 1;
 vWind = [0.6,-0.1];
 
 % find the shortest path in wind
+tic
 [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInit,cTerm,Rmin,vAir,vWind);
+toc
 
 figure
+subplot 211
 plot(px,py,'b-', ...
      pxa,pya,'r--', ...
      cInit(1)+[0 cos(cInit(3))],cInit(2)+[0 sin(cInit(3))],'m-',...
@@ -41,9 +44,11 @@ codegen shortestWindPath.m -args {coder.typeof(cInit),coder.typeof(cTerm),coder.
 %% test mex
 
 % find the shortest path in wind
+tic
 [px,py,pt,pxa,pya,clInc]=shortestWindPath_mex(cInit,cTerm,Rmin,vAir,vWind);
+toc
 
-figure
+subplot 212
 plot(px,py,'b-', ...
      pxa,pya,'r--', ...
      cInit(1)+[0 cos(cInit(3))],cInit(2)+[0 sin(cInit(3))],'m-',...

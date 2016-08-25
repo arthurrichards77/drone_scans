@@ -1,5 +1,6 @@
 close all
 clear all
+Tstart = tic;
 
 % flight parameters
 Rmin = 0.75;
@@ -40,7 +41,7 @@ Pell = [0  10.3 10.4  1.8  1.8  0;
         0   0    2.3  2.3 10.2 10.2];
 
 % choose test case
-P = Pell;
+P = Pnotch;
 
 % find centroid
 pCent = mean(P,2);
@@ -127,3 +128,5 @@ area(angs*180/pi,[scanTimeList; turnTimeList]')
 legend('Scanning','Turning','Location','SouthEast')
 xlabel('Angle (^o)')
 ylabel('Time')
+
+toc(Tstart)
