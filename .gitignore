@@ -2,3 +2,5 @@
 results/*
 codegen/*
 rungit.bat
+*.mexw64
+*.mexw32
