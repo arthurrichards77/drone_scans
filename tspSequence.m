@@ -81,6 +81,8 @@ for ii=2:numStrips,
                 % store the distances - from end of ii in direction di
                 % to start of strip jj in direction dj
                 d(1+2*ii-di,1+2*jj-dj) = ptt(end);
+                % time to fly to this strip and complete the strip
+                T(1+2*ii-di,1+2*jj-dj)=d(1+2*ii-di,1+2*jj-dj)/vAir + stripTimes(ii,di);
                 % next to curr
                 cInit = [nextFlt(:,2);nextHdg];
                 cTerm = [currFlt(:,1);currHdg];
@@ -89,6 +91,8 @@ for ii=2:numStrips,
                 plot(px,py,'b-')
                 % store the distances
                 d(1+2*jj-dj,1+2*ii-di) = ptt(end);
+                % time to fly to this strip and complete the strip
+                T(1+2*jj-dj,1+2*ii-di)=d(1+2*jj-dj,1+2*ii-di)/vAir + stripTimes(jj,dj);                
             end
         end
     end
