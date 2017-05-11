@@ -4,3 +4,5 @@ codegen/*
 rungit.bat
 *.mexw64
 *.mexw32
+res.dat
+tsp.dat
