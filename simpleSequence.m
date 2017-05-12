@@ -4,18 +4,24 @@ clear all
 % flight parameters
 Rmin = 0.75;
 vAir = 1;
-vWind = [0.0001,-0.7];
+vWind = [0.0001,-0.5];
+%vWind = [-0.2,-0.4];
+%vWind = [0.1,0.5];
+%Rmin = 1.5;
 
 % field polygon
 % simple square
-P = [0 10 10 0;
-    0  0 10 10];
+P = [0 6 6 0;
+    0  0 6 6];
+
+P = [0 6 6 0 0 3 3 0 ;
+    0  0 6 6 4 4 2 2];
 
 % strip angle
-ang = 1.75*pi/2;
+ang = 1.0*pi/2;
 
 % strip width
-wid = 1;
+wid = 1.01;
 
 % strip offset
 ofs = -0.0;
@@ -38,7 +44,7 @@ for pp=1:numStrips,
     if numel(thisP)>0,
         col = 'c'; %[pp 0 numStrips-pp]/numStrips;
         patch(strips{pp}(1,:),strips{pp}(2,:),col,'FaceAlpha',0.5)
-        plot(stripFlights{pp}(1,:),stripFlights{pp}(2,:),'ko--')
+        %plot(stripFlights{pp}(1,:),stripFlights{pp}(2,:),'ko--')
     end
 end
 
@@ -62,7 +68,7 @@ for ii=1:numStrips,
 end
 
 %optional plot highlighting
-stripHighlight = 1;
+stripHighlight = 0;
 
 % find all possible transit times
 for ii=1:numStrips,

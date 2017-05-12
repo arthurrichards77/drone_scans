@@ -6,7 +6,7 @@ function [pp,pt,scanTime,turnTime] = simpleOrderedSequence(stripFlights,stripTim
 % start arbitrarily at flight number one, first end
 pp = stripFlights{1};
 currFlt = stripFlights{1};
-currDir = 1; % column 1 to column 2
+currDir = 2; % column 1 to column 2
 %currTrk = atan2((stripFlights{1}(2,currDir)-stripFlights{1}(2,3-currDir)), ...
 %    (stripFlights{1}(1,currDir)-stripFlights{1}(1,3-currDir)));
 %[currHdg,Vg] = hdgSpdForTrkInWind(vAir,currTrk,vWind);

@@ -1,7 +1,7 @@
 model tsp.mod;
 data tsp.dat;
-option solver gurobi_ampl;
-#option solver cplex;
+#option solver gurobi_ampl;
+option solver cplex;
 solve;
 display X;
 display cost;
