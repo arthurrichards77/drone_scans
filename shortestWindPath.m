@@ -6,7 +6,7 @@ function [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInit,cTerm,Rmin,vFly,vWind)
 dbgPlot = false;
 
 % bisection tolerance
-tolBisect = 1e-5;
+tolBisect = 1e-3;
 
 % default path class mask
 clMaskDef = [true(6,1); false(2,1)];
@@ -16,7 +16,7 @@ clMaskDef = [true(6,1); false(2,1)];
 dLB = 0;
 [gLB,pxa,pya,pt,clLB] = targetTimeDiff(dLB,cInit,cTerm,Rmin,vWind,vFly,clMaskDef);
 % gone wrong if g not zero at zero
-%assert(gLB>=0)
+% assert(gLB>=0)
 
 % set default class here just to keep codegen happy
 clInc = clLB;
@@ -65,17 +65,19 @@ end
 
 % check for discontinuity - am I riding same line both sides?
 if ~strcmp(clLB,clUB),
-    % %     disp('Discontinuity')
-    % %     clLB
-    % %     clUB
-    % %     gLB
-    % %     gUB
+    if dbgPlot,
+        disp('Discontinuity')
+        clLB
+        clUB
+        gLB
+        gUB
+    end
     % time to work right from the upper bound
-    dT = dUB;
+    dT = dUB*19/20;
     % cautious steps here
     dStep = dUB/20;
     % initialize for each case
-    gLast = NaN(8,1);
+    gLast = ones(8,1);
     for cc=1:8,
         [thisG,~,~,~,~] = targetTimeDiff(dT,cInit,cTerm,Rmin,vWind,vFly,((1:8)==cc));
         if isempty(thisG),
@@ -87,7 +89,10 @@ if ~strcmp(clLB,clUB),
             end
         end
     end
-    %     gLast
+    if dbgPlot,
+        disp('Starting second search')        
+        gLast
+    end
     % winning class placeholder
     ccWins = 0;
     % linear search this time
@@ -103,8 +108,12 @@ if ~strcmp(clLB,clUB),
                 end
                 if thisG(1)*gLast(cc)<=0,
                     % sign change - possible winner!
+%                     if dbgPlot,
+%                         disp('Possible winner')
+%                         cc
+%                     end
                     % also check for step here too
-                    if abs(thisG(1)-gLast(cc))<Rmin, % needs better tolerance
+                    if abs(thisG(1)-gLast(cc))<1.5*Rmin, % needs better tolerance
                         ccWins = cc;
                         if dbgPlot,
                             figure(9)
@@ -120,6 +129,10 @@ if ~strcmp(clLB,clUB),
             end
         end
         if ccWins>0,
+            if dbgPlot,
+                disp('Found a winner')
+                cc
+            end
             break
         end
     end
@@ -197,7 +210,7 @@ cTermShifted = cTerm - [vWind(1);vWind(2);0]*tShift;
 % trap empty case with NaN
 if isempty(pt),
     tFly = NaN;
-    G = NaN;    
+    G = NaN;
 else
     % flight time for real aircraft
     tFly = max(pt,[],2)/vFly;

@@ -3,6 +3,6 @@ data tsp.dat;
 option solver gurobi_ampl;
 #option solver cplex;
 solve;
-display X;
+#display X;
 display cost;
 printf{i in 1..(2*N+1),j in 1..(2*N+1)}: "%i\n", X[i,j] > res.dat;
