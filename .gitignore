@@ -1,6 +1,7 @@
 *.asv
 results/*
-codegen/*
+**/codegen/*
+**/slprj/*
 rungit.bat
 *.mexw64
 *.mexw32

@@ -2,29 +2,25 @@ close all
 clear all
 
 % flight parameters
-Rmin = 0.75;
-vAir = 1;
-vWind = [0.5,0.0];
+Rmin = 35;
+vAir = 10;
+vWind = [6.5,1.0];
 %vWind = [-0.2,-0.4];
 %vWind = [0.1,0.5];
 %Rmin = 1.5;
 
 % field polygon
-% simple square
-P = [0 6 6 0;
-    0  0 6 6];
-
-P = [0 6 6 0 0 3 3 0 ;
+P = 50*[0 6 6 0 0 3 3 0 ;
     0  0 6 6 4 4 2 2];
 
 % strip width
-wid = 1.01;
+wid = 30;
 
 % strip offset
 ofs = -0.0;
 
 % strip angle
-ang = -1.0*pi/2;
+ang = 0.79*pi/2;
 
 % divide into strips
 [strips,stripFlights] = stripPoly(P,ang,wid,ofs);
@@ -169,24 +165,28 @@ for kk=1:(2*numStrips),
     currJob = nextJob;
 end
 
+totalTime = scanTime+turnTime;
+
 % plot
 %figure(2)
 %clf
 % plot the original field
-patch(P(1,:),P(2,:),'g')
+%patch(P(1,:),P(2,:),'g')
 axis equal
 hold on
 for kk=1:numStrips,
     thisP = strips{kk};
     if numel(thisP)>0,
         col = 'c'; %[pp 0 numStrips-pp]/numStrips;
-        patch(strips{kk}(1,:),strips{kk}(2,:),col,'FaceAlpha',0.5)
+        %patch(strips{kk}(1,:),strips{kk}(2,:),col,'FaceAlpha',0.5)
     end
 end
 
 plot(pp(1,:),pp(2,:),'k-', ...
     1.2*max(P(1,:)), 1.2*max(P(2,:)),'ro', 1.2*max(P(1,:)) + [0 vWind(1)], 1.2*max(P(2,:)) + [0 vWind(2)],'r-', ...
     pp(1,1),pp(2,1),'k^','LineWidth',1.5)
-title(sprintf('%.0f^o : %.1f scanning and %.1f turning : %.1f total',ang*180/pi,scanTime,turnTime,scanTime+turnTime))
+title(sprintf('%.0f^o : %.1f scanning and %.1f turning : %.1f total',ang*180/pi,scanTime,turnTime,totalTime))
 
 testCost = sum(sum(X(1:(2*numStrips),:).*cost))
+
+save sim/testpath totalTime pp vWind vAir Rmin

@@ -1,5 +1,3 @@
-% find fastest turn path in wind
-% adopt method from McGee Spry and Hedrick
 close all
 clear all
 
@@ -16,8 +14,9 @@ cTerm = [    -0.104995403862968
 
 % flight parameters
 Rmin = 0.75;
-vAir = 1;
+vAir = 2;
 vWind = [-0.00001,-0.5];
+vWind = 0*vWind;
 
 % find the shortest path in wind
 [px,py,pt,pxa,pya,clInc]=shortestWindPath(cInit,cTerm,Rmin,vAir,vWind);
@@ -29,6 +28,6 @@ plot(px,py,'b-', ...
      cTerm(1)+[0 cos(cTerm(3))],cTerm(2)+[0 sin(cTerm(3))],'g-', ...
      cInit(1),cInit(2),'mo',...
      cTerm(1),cTerm(2),'go')
-title(sprintf('Path length %5.2f of type %s',max(pt),clInc))
+title(sprintf('Path time %5.2f of type %s',max(pt),clInc))
 axis equal
 grid on

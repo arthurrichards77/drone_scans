@@ -29,7 +29,7 @@ plot(px,py,'b-', ...
      pxa,pya,'r--', ...
      cInit(1)+[0 cos(cInit(3))],cInit(2)+[0 sin(cInit(3))],'g-',...
      cTerm(1)+[0 cos(cTerm(3))],cTerm(2)+[0 sin(cTerm(3))],'g-')
-title(sprintf('Path length %5.2f of type %s',max(pt),clInc))
+title(sprintf('Path time %5.2f of type %s',max(pt),clInc))
 axis equal
 grid on
 
@@ -46,7 +46,7 @@ plot(px,py,'b-', ...
      pxa,pya,'r--', ...
      cInit(1)+[0 cos(cInit(3))],cInit(2)+[0 sin(cInit(3))],'g-',...
      cTerm(1)+[0 cos(cTerm(3))],cTerm(2)+[0 sin(cTerm(3))],'g-')
-title(sprintf('Path length %5.2f of type %s',max(pt),clInc))
+title(sprintf('Path time %5.2f of type %s',max(pt),clInc))
 axis equal
 grid on
 
@@ -63,7 +63,7 @@ plot(px,py,'b-', ...
      pxa,pya,'r--', ...
      cInit(1)+[0 cos(cInit(3))],cInit(2)+[0 sin(cInit(3))],'g-',...
      cTerm(1)+[0 cos(cTerm(3))],cTerm(2)+[0 sin(cTerm(3))],'g-')
-title(sprintf('Path length %5.2f of type %s',max(pt),clInc))
+title(sprintf('Path time %5.2f of type %s',max(pt),clInc))
 axis equal
 grid on
 
@@ -80,7 +80,7 @@ plot(px,py,'b-', ...
      pxa,pya,'r--', ...
      cInit(1)+[0 cos(cInit(3))],cInit(2)+[0 sin(cInit(3))],'g-',...
      cTerm(1)+[0 cos(cTerm(3))],cTerm(2)+[0 sin(cTerm(3))],'g-')
-title(sprintf('Path length %5.2f of type %s',max(pt),clInc))
+title(sprintf('Path time %5.2f of type %s',max(pt),clInc))
 axis equal
 grid on
 
@@ -98,7 +98,7 @@ cTerm = [    1.4990
     1.5179];
 
 Rmin = 0.75;
-vAir = 1;
+vAir = 2;
 vWind = [0.6,-0.1];
 
 % find the shortest path in wind
@@ -111,6 +111,6 @@ plot(px,py,'b-', ...
      cTerm(1)+[0 cos(cTerm(3))],cTerm(2)+[0 sin(cTerm(3))],'g-', ...
      cInit(1),cInit(2),'mo',...
      cTerm(1),cTerm(2),'go')
-title(sprintf('Path length %5.2f of type %s',max(pt),clInc))
+title(sprintf('Path time %5.2f of type %s',max(pt),clInc))
 axis equal
 grid on
