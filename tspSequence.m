@@ -36,7 +36,7 @@ for ii=1:numStrips,
         % di and then stop (i.e. do task 2N+1)
         cost(1+2*ii-di,2*numStrips+1) = stripTimes(ii,di);
         for jj=1:(ii-1),
-            for dj=[1 2],                
+            for dj=[1 2],
                 % get the next strip
                 nextFlt = stripFlights{jj}(:,[3-dj dj]);
                 nextHdg = stripHdgs(jj,dj);
@@ -50,7 +50,11 @@ for ii=1:numStrips,
                 end
                 % store the distances - from end of ii in direction di
                 % to start of strip jj in direction dj
-                transitTimes(1+2*ii-di,1+2*jj-dj) = ptt(end);
+                if isempty(ptt),
+                    keyboard
+                else
+                    transitTimes(1+2*ii-di,1+2*jj-dj) = ptt(end);
+                end
                 % and the flights
                 transitFlights{ii,di,jj,dj} = [px;py];
                 % store the "cost" - time to complete strip ii in direction
@@ -64,7 +68,11 @@ for ii=1:numStrips,
                 if (jj==stripHighlight)||(ii==stripHighlight),
                     plot(px,py,'m-')
                 end% store the distances
-                transitTimes(1+2*jj-dj,1+2*ii-di) = ptt(end);
+                if isempty(ptt),
+                    keyboard
+                else
+                    transitTimes(1+2*jj-dj,1+2*ii-di) = ptt(end);
+                end
                 % and the flights
                 transitFlights{jj,dj,ii,di} = [px;py];
                 % store the "cost" - time to complete strip jj in direction
@@ -94,7 +102,11 @@ fclose(fid);
 %!grep -o 'X\[.*\]\W*\*\W*[01]' tsp.txt | grep -o '[01]$' > res.dat
 
 % glpk via cygwin
-!tspsolve
+if ispc(),
+    !tspsolve.bat
+elseif isunix(),
+    !./tspsolve.sh
+end
 
 res = load('tsp/res.dat');
 assert(numel(res)==(2*numStrips+1)^2)
