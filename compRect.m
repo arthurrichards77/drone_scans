@@ -20,20 +20,20 @@ angs = (1:Nangs)*2*pi/Nangs;
 %% field
 
 % simple square
-Psq = [0 200 200  0;
-    0  0 200 200]*0.999;
+Prect = [0 80 80  0;
+    0  0 500 500]*0.999;
 
 % rotation angle
-rotAngle = 0.1*pi;
+rotAngle = 22*pi/180;
 
 % rotate the field
 P = [cos(rotAngle) sin(rotAngle);
-    -sin(rotAngle) cos(rotAngle)]*Psq;
+    -sin(rotAngle) cos(rotAngle)]*Prect;
 
 %% data saving options
 plotFlag = true;
 saveFlag = true;
-fStub = 'results/sq';
+fStub = 'results/rect';
 
 %% loop
 hWait = waitbar(0,'Progress');
