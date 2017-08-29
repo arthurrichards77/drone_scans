@@ -20,52 +20,20 @@ angs = (1:Nangs)*2*pi/Nangs;
 %% field
 
 % simple square
-Psq = [0 100 100  0;
-    0  0 100 100]*0.999;
-
-% rectangle
-Prect = [0 5  5  0;
-    0 0 20 20]*0.999;
-
-% rectangle, this time without whole numbered sides
-Prect2 = [0 4.5  4.5  0;
-    0   0 22.2 22.2];
-
-% rectangle, this time without whole numbered sides
-% and now with even number of strips
-Prect3 = [0 5.5  5.5  0;
-    0   0 18.2 18.2];
-
-% odd shape, no sides parallel
-Podd = [0 3  3   -1 -3.6
-    0 1 11.3 10  3.6];
-
-% rectangle 3, but with a notch
-Pnotch = 0.5*[0 5.5  5.5  0    0     0.8  0;
-    0   0 18.2 18.2 11.2  10.1  9.5];
-
-% circular, almost
-ths = pi*(1:10)/5;
-Pcirc = 100*[cos(ths);sin(ths)];
-
-% C-shaped
-Pc = 0.999*50*[0 6 6 0 0 3 3 0 ;
-    0  0 6 6 4 4 2 2];
-
-% choose test case
-P = Psq;
+Psq = [0 200 200  0;
+    0  0 200 200]*0.999;
 
 % rotation angle
 rotAngle = 0.1*pi;
 
 % rotate the field
 P = [cos(rotAngle) sin(rotAngle);
-    -sin(rotAngle) cos(rotAngle)]*P;
+    -sin(rotAngle) cos(rotAngle)]*Psq;
 
 %% data saving options
 plotFlag = true;
 saveFlag = true;
-fStub = 'results/sq_';
+fStub = 'results/sq';
 
 %% loop
 hWait = waitbar(0,'Progress');
@@ -81,14 +49,12 @@ for kk=1:numel(angs),
     turnTimeList(kk) = turnTime;
     
     % optional save of data and plot
-    saveFlag = false;
     if saveFlag,
         fname=sprintf('%s_%03d',fStub,kk);
         % save all data
         save([fname '.mat'], 'pp', 'scanTime', 'turnTime', 'totalTime', 'P','cutAngle','stripWidth','cutOffset','Rmin','vWind','vAir');
     end
     
-    plotFlag = true;
     if plotFlag,
         clf
         plotFlight(pp,strips,P,vWind,vAir)
