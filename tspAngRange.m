@@ -5,7 +5,7 @@ Tstart = tic;
 %% flight parameters
 Rmin = 35;
 vAir = 10;
-vWind = [6.5,1.0];
+vWind = [0.0,-7.0];
 
 % strip width
 stripWidth = 30;
@@ -55,6 +55,13 @@ Pell = 0.999*50*[0 6 6 0 0 3 3 0 ;
 % choose test case
 P = Pell;
 
+% rotation angle
+rotAngle = 0.1*pi;
+
+% rotate the field
+P = [cos(rotAngle) sin(rotAngle);
+    -sin(rotAngle) cos(rotAngle)]*P;
+
 %% data saving options
 plotFlag = true;
 saveFlag = false;
@@ -69,7 +76,7 @@ for kk=1:numel(angs),
     % strip angle
     cutAngle = angs(kk);
     
-    [scanTime,turnTime,totalTime,pp,strips] = tspSequence(P,cutAngle,stripWidth,cutOffset,Rmin,vAir,vWind);    
+    [scanTime,turnTime,totalTime,pp,strips] = tspSequence(P,cutAngle,stripWidth,cutOffset,Rmin,vAir,vWind);
     scanTimeList(kk) = scanTime;
     turnTimeList(kk) = turnTime;
     

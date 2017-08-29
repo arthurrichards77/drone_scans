@@ -20,7 +20,7 @@ stripWidth = 30;
 cutOffset = -0.0;
 
 % strip angle
-cutAngle = 0.45*pi/2;
+cutAngle = 0.33*pi/2;
 
 [scanTime,turnTime,totalTime,pp,strips] = tspSequence(P,cutAngle,stripWidth,cutOffset,Rmin,vAir,vWind);
 

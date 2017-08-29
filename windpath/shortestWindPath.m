@@ -109,9 +109,9 @@ else
             gUB
         end
         % time to work right from the upper bound
-        dT = dUB*19/20;
+        dT = dUB*39/40;
         % cautious steps here
-        dStep = dUB/20;
+        dStep = dUB/40;
         % initialize for each case
         gLast = ones(8,1);
         for cc=1:8,
@@ -168,6 +168,7 @@ else
                 if dbgPlot,
                     disp('Found a winner')
                     cc
+                    clInc
                 end
                 break
             end
@@ -191,7 +192,7 @@ else
             end
         end
         
-    end
+    end    
     
     % convert distance paramater to times
     pt = pt/vFly;
@@ -206,7 +207,7 @@ else
     
     % optional plotting of G functions for debug
     if dbgPlot,
-        dsRng = linspace(0,2*dmax,500);
+        dsRng = linspace(0,2*dmax,2000);
         for cc=1:8,
             clTest = ((1:8)==cc);
             for ii=1:numel(dsRng),
@@ -225,8 +226,20 @@ else
         plot(dsRng,gsRng,'-')
         legend('s','s2','LSL','RSR','RSL','LSR','RLRo','LRLo','RLRi','LRLi')
         plot([0 2*dmax],[0 0],'k:')
+        plot(dsRng,min(gsRng'),'k--')
+        plot(dsRng,min(abs(gsRng)'),'b--')
     end
     
+end
+
+% final catch all in case of numerical problems - return huge time
+if strcmp(clInc,'NFP'),
+    pt = 100*2*pi*Rmin/vFly; % time to do 100 circles
+    % just fly straight
+    px = [cInit(1) cTerm(1)];
+    py = [cInit(2) cTerm(2)];    
+    pxa = px;
+    pya = py;    
 end
 
 end
