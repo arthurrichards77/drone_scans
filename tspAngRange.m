@@ -91,7 +91,7 @@ for kk=1:numel(angs),
     plotFlag = true;
     if plotFlag,
         clf
-        plotFlight(pp,strips,P,vWind)
+        plotFlight(pp,strips,P,vWind,vAir)
         % results summary in title
         title(sprintf('%.0f^o TSP : %.1f scanning and %.1f turning : %.1f total',cutAngle*180/pi,scanTime,turnTime,totalTime))
         pause(0.001)
