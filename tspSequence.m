@@ -36,8 +36,7 @@ for ii=1:numStrips,
         % di and then stop (i.e. do task 2N+1)
         cost(1+2*ii-di,2*numStrips+1) = stripTimes(ii,di);
         for jj=1:(ii-1),
-            for dj=[1 2],
-                
+            for dj=[1 2],                
                 % get the next strip
                 nextFlt = stripFlights{jj}(:,[3-dj dj]);
                 nextHdg = stripHdgs(jj,dj);

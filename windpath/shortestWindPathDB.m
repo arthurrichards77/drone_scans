@@ -3,7 +3,8 @@ function [px,py,pt,pxa,pya,clInc]=shortestWindPathDB(cInit,cTerm,Rmin,vFly,vWind
 % includes database of previous solutions
 %
 
-persistent turnDBrows turnDBsols
+persistent turnDBrows turnDBsols nextDBrow
+maxDBsize = 500;
 
 % position offset - shift to start at origin
 cInitOs=cInit - [cInit(1:2); 0];
@@ -15,8 +16,11 @@ queryRow = [cInitOs(3) cTermOs(1) cTermOs(2) cTermOs(3) Rmin vFly vWind(1) vWind
 % test if in DB
 if isempty(turnDBrows),
     loc=0;
+    turnDBrows = zeros(maxDBsize,8);
+    nextDBrow = 0;
 else
     [loc]=myDBsearch(queryRow,turnDBrows);
+    %disp(size(turnDBrows))
 end
 
 if loc>0,
@@ -44,14 +48,12 @@ else
     
     % store it in DB
     sol = struct('px',px,'py',py,'pt',pt,'pxa',pxa,'pya',pya,'clInc',clInc);
-    
-    if isempty(turnDBrows),
-        turnDBrows = queryRow;
-        turnDBsols = {sol};
-    else
-        turnDBrows = [turnDBrows;queryRow];
-        turnDBsols = {turnDBsols{:},sol};
+    nextDBrow = nextDBrow+1;
+    if nextDBrow>maxDBsize,
+        nextDBrow=1;
     end
+    turnDBrows(nextDBrow,:) = queryRow;
+    turnDBsols{nextDBrow} = sol;
 end
 
 % need to put it back to original location
