@@ -1,33 +1,7 @@
-close all
-clear all
-
-% flight parameters
-Rmin = 0.75;
-vAir = 1;
-vWind = [0.0001,-0.5];
-%vWind = [-0.2,-0.4];
-%vWind = [0.1,0.5];
-%Rmin = 1.5;
-
-% field polygon
-% simple square
-P = [0 6 6 0;
-    0  0 6 6];
-
-P = [0 6 6 0 0 3 3 0 ;
-    0  0 6 6 4 4 2 2];
-
-% strip angle
-ang = 1.0*pi/2;
-
-% strip width
-wid = 1.01;
-
-% strip offset
-ofs = -0.0;
+function [scanTime,turnTime,totalTime,pp,strips] = simpleSequence(P,cutAngle,stripWidth,cutOffset,Rmin,vAir,vWind)
 
 % divide into strips
-[strips,stripFlights] = stripPoly(P,ang,wid,ofs);
+[strips,stripFlights] = stripPoly(P,cutAngle,stripWidth,cutOffset);
 
 % plot the original field
 patch(P(1,:),P(2,:),'g')
@@ -35,18 +9,8 @@ axis equal
 hold on
 
 % sort flights towards wind
-stripFlights = sortFlights(stripFlights,[sin(ang);-cos(ang)]);
-
-% plot what we got back
+stripFlights = sortFlights(stripFlights,-[sin(cutAngle);-cos(cutAngle)]);
 numStrips = numel(strips);
-for pp=1:numStrips,
-    thisP = strips{pp};
-    if numel(thisP)>0,
-        col = 'c'; %[pp 0 numStrips-pp]/numStrips;
-        patch(strips{pp}(1,:),strips{pp}(2,:),col,'FaceAlpha',0.5)
-        %plot(stripFlights{pp}(1,:),stripFlights{pp}(2,:),'ko--')
-    end
-end
 
 % find flight times and headings for each strip
 for ii=1:numStrips,
@@ -116,7 +80,6 @@ for ii=1:numStrips,
                 % store the "cost" - time to complete strip jj in direction
                 % dj and then fly to start of strip ii direction di
                 cost(1+2*jj-dj,1+2*ii-di) = transitTimes(1+2*jj-dj,1+2*ii-di) + stripTimes(jj,dj);
-                
             end
         end
     end
@@ -124,8 +87,93 @@ end
 
 
 [pp,pt,scanTime,turnTime] = simpleOrderedSequence(stripFlights,stripTimes,transitFlights,transitTimes);
-plot(pp(1,:),pp(2,:),'k-', ...
-    1.2*max(P(1,:)), 1.2*max(P(2,:)),'ro', 1.2*max(P(1,:)) + [0 vWind(1)], 1.2*max(P(2,:)) + [0 vWind(2)],'r-', ...
-    pp(1,1),pp(2,1),'k^','LineWidth',1.5)
-title(sprintf('%.0f^o : %.1f scanning and %.1f turning : %.1f total',ang*180/pi,scanTime,turnTime,scanTime+turnTime))
+totalTime = scanTime+turnTime;
 
+end
+
+function [pp,pt,scanTime,turnTime] = simpleOrderedSequence(stripFlights,stripTimes,transitFlights,transitTimes)
+%
+% pp is matrix of waypoints [.....[xi;yi]......]
+% pt is vector of times
+
+% start arbitrarily at flight number one, first end
+pp = stripFlights{1};
+currFlt = stripFlights{1};
+currDir = 2; % column 1 to column 2
+%currTrk = atan2((stripFlights{1}(2,currDir)-stripFlights{1}(2,3-currDir)), ...
+%    (stripFlights{1}(1,currDir)-stripFlights{1}(1,3-currDir)));
+%[currHdg,Vg] = hdgSpdForTrkInWind(vAir,currTrk,vWind);
+currTime = stripTimes(1,currDir);
+pt = [0 currTime];
+turnTime = 0;
+scanTime = currTime;
+
+for ii=2:numel(stripFlights),
+    
+    % stupid simple for now - just work through 1:n
+    jj = ii;
+    
+    % opposite direction
+    nextDir = 3-currDir;
+    
+    % the start and end points, in that order
+    nextFlt = stripFlights{jj}(:,[3-nextDir nextDir]);
+    
+    % track of next flight strip
+    %nextTrk = atan2((nextFlt(2,2)-nextFlt(2,1)), ...
+    %    (nextFlt(1,2)-nextFlt(1,1)));
+    
+    % heading to fly it
+    %[nextHdg,nextVg] = hdgSpdForTrkInWind(vAir,nextTrk,vWind);
+    
+    % now find the transition
+    %cInit = [currFlt(:,2);currHdg];
+    %cTerm = [nextFlt(:,1);nextHdg];
+    %[px,py,ptt,pxa,pya,clInc]=shortestWindPathDB(cInit,cTerm,Rmin,vAir,vWind);
+    
+    % get transition from list
+    pxpy = transitFlights{jj-1,currDir,jj,nextDir};
+    
+    % and the time
+    ptt = transitTimes(1+2*jj-nextDir,1+2*(jj-1)-currDir);
+    
+    % append to the flight so far
+    pp = [pp pxpy nextFlt];
+    
+    % add both the turn and the flight to the time
+    pt = [pt currTime+ptt];
+    currTime = currTime + max(ptt);
+    turnTime = turnTime + max(ptt);
+    % and the flight segment
+    thisScanTime = stripTimes(jj,nextDir);
+    scanTime = scanTime + thisScanTime;
+    currTime = currTime + thisScanTime;
+    pt = [pt currTime];
+    
+    % and update for next iter
+    %currFlt = nextFlt;
+    currDir = nextDir;
+    %currHdg = nextHdg;
+    
+end
+
+end
+
+function fltsOut = sortFlights(fltsIn,dirVec)
+%
+% sort flights in ascending order of projection
+% of midpoints on 'dirVec'
+%
+
+% calculate for each
+for ii=1:numel(fltsIn),
+    vals(ii) = [dirVec(1) dirVec(2)]*fltsIn{ii}*[0.5;0.5];
+end
+
+% do the sort
+[svals,sidx]=sort(vals);
+
+% and return the sorted flight list
+fltsOut = fltsIn(sidx);
+
+end

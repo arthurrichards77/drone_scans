@@ -1,48 +1,8 @@
-close all
-clear all
-
-% flight parameters
-Rmin = 35;
-vAir = 10;
-vWind = [6.5,1.0];
-%vWind = [-0.2,-0.4];
-%vWind = [0.1,0.5];
-%Rmin = 1.5;
-
-% field polygon
-P = 50*[0 6 6 0 0 3 3 0 ;
-    0  0 6 6 4 4 2 2];
-
-% strip width
-wid = 30;
-
-% strip offset
-ofs = -0.0;
-
-% strip angle
-ang = 0.79*pi/2;
+function [scanTime,turnTime,totalTime,pp,strips] = tspSequence(P,cutAngle,stripWidth,cutOffset,Rmin,vAir,vWind)
 
 % divide into strips
-[strips,stripFlights] = stripPoly(P,ang,wid,ofs);
-
-% plot the original field
-patch(P(1,:),P(2,:),'g')
-axis equal
-hold on
-
-% sort flights towards wind
-stripFlights = sortFlights(stripFlights,[sin(ang);-cos(ang)]);
-
-% plot what we got back
+[strips,stripFlights] = stripPoly(P,cutAngle,stripWidth,cutOffset);
 numStrips = numel(strips);
-for pp=1:numStrips,
-    thisP = strips{pp};
-    if numel(thisP)>0,
-        col = 'c'; %[pp 0 numStrips-pp]/numStrips;
-        patch(strips{pp}(1,:),strips{pp}(2,:),col,'FaceAlpha',0.5)
-        %plot(stripFlights{pp}(1,:),stripFlights{pp}(2,:),'ko--')
-    end
-end
 
 % find flight times and headings for each strip
 for ii=1:numStrips,
@@ -117,7 +77,7 @@ for ii=1:numStrips,
 end
 
 % save for AMPL
-fid = fopen('tsp.dat','w');
+fid = fopen('tsp/tsp.dat','w');
 AMPLscalarint(fid,'N',numStrips);
 AMPLmatrix(fid,'J',cost);
 fclose(fid);
@@ -130,10 +90,14 @@ fclose(fid);
 %res = load('res.dat');
 
 % glpk on linux
-!glpsol -m tsp.mod -d tsp.dat -o tsp.txt
+%!glpsol -m tsp.mod -d tsp.dat -o tsp.txt
 % just grab the X results
-!grep -o 'X\[.*\]\W*\*\W*[01]' tsp.txt | grep -o '[01]$' > tsp2.txt
-res = load('tsp2.txt');
+%!grep -o 'X\[.*\]\W*\*\W*[01]' tsp.txt | grep -o '[01]$' > res.dat
+
+% glpk via cygwin
+!tspsolve
+
+res = load('tsp/res.dat');
 assert(numel(res)==(2*numStrips+1)^2)
 
 % reshape to matrix
@@ -170,26 +134,6 @@ for kk=1:(2*numStrips),
 end
 
 totalTime = scanTime+turnTime;
-
-% plot
-%figure(2)
-%clf
-% plot the original field
-%patch(P(1,:),P(2,:),'g')
-axis equal
-hold on
-for kk=1:numStrips,
-    thisP = strips{kk};
-    if numel(thisP)>0,
-        col = 'c'; %[pp 0 numStrips-pp]/numStrips;
-        %patch(strips{kk}(1,:),strips{kk}(2,:),col,'FaceAlpha',0.5)
-    end
-end
-
-plot(pp(1,:),pp(2,:),'k-', ...
-    1.2*max(P(1,:)), 1.2*max(P(2,:)),'ro', 1.2*max(P(1,:)) + [0 vWind(1)], 1.2*max(P(2,:)) + [0 vWind(2)],'r-', ...
-    pp(1,1),pp(2,1),'k^','LineWidth',1.5)
-title(sprintf('%.0f^o : %.1f scanning and %.1f turning : %.1f total',ang*180/pi,scanTime,turnTime,totalTime))
 
 testCost = sum(sum(X(1:(2*numStrips),:).*cost))
 
