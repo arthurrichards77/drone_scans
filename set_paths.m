@@ -1,4 +1,4 @@
-addpath strips
-addpath windpath
-addpath heading
-addpath ampltools
+addpath([pwd '/strips'])
+addpath([pwd '/windpath'])
+addpath([pwd '/heading'])
+addpath([pwd '/ampltools'])
