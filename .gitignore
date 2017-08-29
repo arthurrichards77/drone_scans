@@ -8,3 +8,6 @@ rungit.bat
 *.mexa64
 res.dat
 tsp.dat
+tsp.txt
+tsp2.txt
+sim/testpath.mat

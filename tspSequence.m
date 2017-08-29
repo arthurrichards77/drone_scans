@@ -125,10 +125,16 @@ fclose(fid);
 % run AMPL - either UoB or BRL version
 % latter uses local temp install of AMPL
 %!ampl tsp.run
-!runampl tsp_cplex.run
-
+%!runampl tsp_cplex.run
 % load results
-res = load('res.dat');
+%res = load('res.dat');
+
+% glpk on linux
+!glpsol -m tsp.mod -d tsp.dat -o tsp.txt
+% just grab the X results
+!grep -o 'X\[.*\]\W*\*\W*[01]' tsp.txt | grep -o '[01]$' > tsp2.txt
+res = load('tsp2.txt');
+assert(numel(res)==(2*numStrips+1)^2)
 
 % reshape to matrix
 X = reshape(res,2*numStrips+1,2*numStrips+1)';
