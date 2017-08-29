@@ -24,7 +24,7 @@ cutAngle = 0.33*pi/2;
 
 [scanTime,turnTime,totalTime,pp,strips] = tspSequence(P,cutAngle,stripWidth,cutOffset,Rmin,vAir,vWind);
 
-plotFlight(pp,strips,P,vWind)
+plotFlight(pp,strips,P,vWind,vAir)
 % results summary in title
 title(sprintf('%.0f^o TSP : %.1f scanning and %.1f turning : %.1f total',cutAngle*180/pi,scanTime,turnTime,totalTime))
 
