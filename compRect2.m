@@ -11,11 +11,11 @@ vWind = [0.0,-7.0];
 stripWidth = 30;
 
 % rectangular field
-Prect = [0 80 80  0;
-    0  0 500 500];
+Pell = [0 300 300 100 100 0;
+    0 0 100 100 200 200];
 
 % rotation angle
-rotAngle = 112*pi/180;
+rotAngle = 45*pi/180;
 
 % rotate the field
 P = [cos(rotAngle) sin(rotAngle);

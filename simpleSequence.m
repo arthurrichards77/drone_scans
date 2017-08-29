@@ -9,7 +9,7 @@ axis equal
 hold on
 
 % sort flights towards wind
-stripFlights = sortFlights(stripFlights,-[sin(cutAngle);-cos(cutAngle)]);
+stripFlights = sortFlights(stripFlights,[sin(cutAngle);-cos(cutAngle)]);
 numStrips = numel(strips);
 
 % find flight times and headings for each strip

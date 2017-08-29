@@ -1,31 +1,37 @@
 close all
 clear all
 
-% flight parameters
+%% flight parameters
 Rmin = 35;
 vAir = 10;
-vWind = [6.5,1.0];
-%vWind = [-0.2,-0.4];
-%vWind = [0.1,0.5];
-%Rmin = 1.5;
-
-% field polygon
-P = 50*[0 6 6 0 0 3 3 0 ;
-    0  0 6 6 4 4 2 2];
+vWind = [0.0,-2.0];
 
 % strip width
 stripWidth = 30;
+
+% rectangular field
+Pell = [0 400 400 110 110 0;
+    0 0 80 80 200 200];
+
+% rotation angle
+rotAngle = -45*pi/180;
+
+% rotate the field
+P = [cos(rotAngle) sin(rotAngle);
+    -sin(rotAngle) cos(rotAngle)]*Pell;
 
 % strip offset
 cutOffset = -0.0;
 
 % strip angle
-cutAngle = 0.79*pi/2;
+cutAngle = 225*pi/180;
 
 [scanTime,turnTime,totalTime,pp,strips] = simpleSequence(P,cutAngle,stripWidth,cutOffset,Rmin,vAir,vWind);
 
-plotFlight(pp,strips,P,vWind)
+plotFlight(pp,strips,P,vWind,vAir)
 % results summary in title
 title(sprintf('%.0f^o UPW : %.1f scanning and %.1f turning : %.1f total',cutAngle*180/pi,scanTime,turnTime,totalTime))
 
 save sim/testpath totalTime pp vWind vAir Rmin
+
+print -dpng best/ell2rlw_seq.png

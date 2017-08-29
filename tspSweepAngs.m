@@ -4,7 +4,7 @@ function [bestTime,bestIndx,scanTimeList,turnTimeList]=tspSweepAngs(P,Rmin,vAir,
 cutOffset = -0.0;
 
 % strip angle range to try
-Nangs = 180;
+Nangs = 360;
 angs = (1:Nangs)*2*pi/Nangs;
 
 %% loop
