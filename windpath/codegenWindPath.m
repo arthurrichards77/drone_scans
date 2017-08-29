@@ -11,12 +11,12 @@ cInit =[         0
    -2.7745];
 
 
-cTerm = [    1.4990
-    0.3618
+cTerm = [    14.990
+    3.618
     1.5179];
 
-Rmin = 0.75;
-vAir = 1;
+Rmin = 35;
+vAir = 12;
 vWind = [0.6,-0.1];
 
 % find the shortest path in wind

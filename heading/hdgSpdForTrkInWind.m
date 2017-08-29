@@ -13,7 +13,7 @@ beta = psi-trk;
 % sine rule to get internal angle at origin
 alpha = asin(sin(beta)*norm(vWind)/Va);
 
-% this give me the heading
+% this gives me the heading
 hdg = trk - alpha;
 
 % trap cases where wind almost parallel to track
