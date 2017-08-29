@@ -19,7 +19,7 @@ plot(1.2*max(P(1,:)), 1.2*max(P(2,:)),'ro', ...
      1.2*max(P(1,:)) + scWind*[0 vWind(1)], 1.2*max(P(2,:)) + scWind*[0 vWind(2)],'r-', 'LineWidth',1.5)
 
 % marker shape
-mkrShape = 5*[-1,2,-1; 1,0,-1]; 
+%mkrShape = 5*[-1,2,-1; 1,0,-1]; 
 mkrShape = 5*[-1 0 1 0 -1 0;2 2 0 -2 -2 0]; 
 % markers showing headings
 mkrMin = 50;
@@ -30,9 +30,9 @@ for kk=mkrIndx',
     dy = pp(2,kk+1)-pp(2,kk);
     px = 0.5*(pp(1,kk+1)+pp(1,kk));
     py = 0.5*(pp(2,kk+1)+pp(2,kk));
-    trk = atan2(dy,dx)
-    hdg = hdgSpdForTrkInWind(vAir,trk,vWind)
-    rotMat = [cos(hdg) -sin(hdg); sin(hdg) cos(hdg)]
+    trk = atan2(dy,dx);
+    hdg = hdgSpdForTrkInWind(vAir,trk,vWind);
+    rotMat = [cos(hdg) -sin(hdg); sin(hdg) cos(hdg)];
     mkrRot = rotMat*mkrShape;
     patch(px+mkrRot(1,:),py+mkrRot(2,:),'r')
 end
