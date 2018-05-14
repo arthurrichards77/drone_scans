@@ -1,3 +1,4 @@
+clear all
 close all
 
 % needs data loaded from example case
@@ -42,3 +43,5 @@ percError = 100*abs(simTime-totalTime)/simTime;
 title(sprintf('Arrived in %.1f.  Prediction was %.1f (%.1f%% error)',simTime,totalTime,percError))
 legend('Planned','Flown','Location','NorthWest')
 print('-dpng',['res/' fname '.png'])
+
+save(['res/' fname '.mat'])
