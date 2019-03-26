@@ -7,6 +7,8 @@ Results and method are described in "Flight Optimization for an Agricultural Unm
 # About the Code
 Each of the scripts "comp...m" runs a sweep of different flight angles for a particular field and wind.  For each angle, the function "tspSequence" will divide the field polygon into strips, cutting along the current angle choice, and then find the optimal sequence with with to fly every strip.
 
+Run script "set_paths.m" to get the required subdirectories on your Matlab path.
+
 The travelling salesman solver uses the free [GLPSOL](https://en.wikibooks.org/wiki/GLPK/Using_GLPSOL) utility, either in Linux or via [Cygwin](https://www.cygwin.com/) on Windows.  The rest of the code runs in Matlab, so the whole package can run on Windows or Linux.
 
 By far the slowest bit of the method is the calculation of the fastest flights paths between all pairs of strips, which uses a Dubins-like method with corrections for wind, by [Mcgee, Spry and Hedrick](https://arc.aiaa.org/doi/10.2514/6.2005-6186).  To speed things up, this has been compiled to a MEX file in Matlab.  Cross-platform users will have to run the code generation script to compile it for their OS etc.
