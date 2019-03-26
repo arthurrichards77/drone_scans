@@ -11,6 +11,10 @@ The travelling salesman solver uses the free [GLPSOL](https://en.wikibooks.org/w
 
 By far the slowest bit of the method is the calculation of the fastest flights paths between all pairs of strips, which uses a Dubins-like method with corrections for wind, by [Mcgee, Spry and Hedrick](https://arc.aiaa.org/doi/10.2514/6.2005-6186).  To speed things up, this has been compiled to a MEX file in Matlab.  Cross-platform users will have to run the code generation script to compile it for their OS etc.
 
+## Dependencies
+* Matlab
+* GLPSOL (part of the GLPK suite)
+
 ## Source subdirectories:
 * ampltools: utilities for writing the datafiles for the TSP, which share their format with the [AMPL](https://ampl.com/) language
 * heading: functions to determine aircraft heading to fly a given ground track in wind, plus determine the ground speed
